@@ -1,7 +1,8 @@
 from rest_framework import parsers, viewsets, renderers, mixins, status
 from rest_framework.decorators import action
-from django.http import FileResponse
+from django.http import FileResponse, JsonResponse
 from rest_framework.response import Response
+import zipfile
 
 from main.models import \
     AIEngine, \
@@ -214,3 +215,41 @@ class InferenceResultsViewSet(
         response['Content-Length'] = model_files.file.size
         response['Content-Disposition'] = 'attachment; filename=result_files.zip'
         return response
+
+    @action(  # TODO rethink API distribution
+        methods=['get'],
+        detail=True,
+        url_name='result_files_contents'  # TODO check headers
+    )
+    def list_result_files_contents(self, *args, **kwargs):  # TODO maybe improve output
+        result_files = zipfile.ZipFile(self.get_object().result_files.path)
+
+        # TODO only return specific files?
+        result_files_contents = [name for name in result_files.namelist() if not name.endswith('/')]
+        response = JsonResponse({'result_files_contents': result_files_contents})
+        return response
+
+    @action(  # TODO rethink API distribution
+        methods=['get'],
+        detail=True,
+        url_name='result_files_contents',  # TODO check headers
+    )
+    def extract_result_file(self, request, *args, **kwargs):
+        result_files = zipfile.ZipFile(self.get_object().result_files.path)
+        specific_file_path = request.query_params.get('file_path')
+
+        if specific_file_path:
+            result_files_contents = {name for name in result_files.namelist() if not name.endswith('/')}
+            if specific_file_path not in result_files_contents:
+                # TODO implement this
+                return Response({f'{specific_file_path} does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+            response = FileResponse(result_files.open(specific_file_path))
+            # response['Content-Length'] = model_files.file.size
+            response['Content-Disposition'] = f'attachment; filename={specific_file_path}'
+            return response
+
+        else:
+            # TODO implement this
+            return Response({f'Query parameter file_path not specified'}, status=status.HTTP_400_BAD_REQUEST)
+
