@@ -1,0 +1,38 @@
+{
+	"count": 2,
+	"next": null,
+	"previous": null,
+	"results": [{
+		"url": "http://127.0.0.2:8000/api/ai_engines/2/",
+		"id": 2,
+		"default_job_config_training_from_scratch": "http://127.0.0.2:8000/api/ai_engines/2/download_default_job_config_training_from_scratch/",
+		"default_job_config_training_from_pretrained_model": "http://127.0.0.2:8000/api/ai_engines/2/download_default_job_config_training_from_pretrained_model/",
+		"default_job_config_evaluating_from_pretrained_model": "http://127.0.0.2:8000/api/ai_engines/2/download_default_job_config_evaluating_from_pretrained_model/",
+		"default_job_config_merging_models": "http://127.0.0.2:8000/api/ai_engines/2/download_default_job_config_merging_models/",
+		"default_job_config_inferencing_from_pretrained_model": "http://127.0.0.2:8000/api/ai_engines/2/download_default_job_config_inferencing_from_pretrained_model/",
+		"name": "MNIST classifier",
+		"container_name": "mnist-classifier",
+		"container_version": "latest",
+		"owner": "bsc",
+		"job_use_cases": ["training_from_scratch", "training_from_pretrained_model", "evaluating_from_pretrained_model", "merging_models", "inferencing_from_pretrained_model"],
+		"data_query": "data_query",
+		"description": "debug AI Engine",
+		"created_at": "2022-03-25T11:55:33.133338+01:00"
+	}, {
+		"url": "http://127.0.0.2:8000/api/ai_engines/1/",
+		"id": 1,
+		"default_job_config_training_from_scratch": "http://127.0.0.2:8000/api/ai_engines/1/download_default_job_config_training_from_scratch/",
+		"default_job_config_training_from_pretrained_model": "http://127.0.0.2:8000/api/ai_engines/1/download_default_job_config_training_from_pretrained_model/",
+		"default_job_config_evaluating_from_pretrained_model": "http://127.0.0.2:8000/api/ai_engines/1/download_default_job_config_evaluating_from_pretrained_model/",
+		"default_job_config_merging_models": "http://127.0.0.2:8000/api/ai_engines/1/download_default_job_config_merging_models/",
+		"default_job_config_inferencing_from_pretrained_model": "http://127.0.0.2:8000/api/ai_engines/1/download_default_job_config_inferencing_from_pretrained_model/",
+		"name": "MNIST classifier",
+		"container_name": "mnist-classifier-2",
+		"container_version": "latest",
+		"owner": "bsc",
+		"job_use_cases": ["training_from_scratch", "training_from_pretrained_model", "evaluating_from_pretrained_model", "merging_models", "inferencing_from_pretrained_model"],
+		"data_query": "data_query",
+		"description": "debug AI Engine",
+		"created_at": "2022-03-25T11:51:53.509112+01:00"
+	}]
+}

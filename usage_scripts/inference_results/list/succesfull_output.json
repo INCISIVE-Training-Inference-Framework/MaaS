@@ -1,0 +1,16 @@
+{
+	"count": 2,
+	"next": null,
+	"previous": null,
+	"results": [{
+		"url": "http://127.0.0.2:8000/api/inference_results/1/",
+		"id": 1,
+		"result_files": "http://127.0.0.2:8000/api/inference_results/1/download_result_files/",
+		"execution_id": 1
+	}, {
+		"url": "http://127.0.0.2:8000/api/inference_results/2/",
+		"id": 2,
+		"result_files": "http://127.0.0.2:8000/api/inference_results/2/download_result_files/",
+		"execution_id": 2
+	}]
+}
