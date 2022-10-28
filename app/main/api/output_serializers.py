@@ -102,8 +102,10 @@ class OutputMetricSerializer(serializers.HyperlinkedModelSerializer):
 class OutputInferenceResultsSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='inference_results-detail')
     id = serializers.IntegerField()
-    result_files = serializers.HyperlinkedIdentityField(view_name='inference_results-result_files')
+    listed_contents = serializers.HyperlinkedIdentityField(view_name='inference_results-list')
+    individual_contents_download = serializers.HyperlinkedIdentityField(view_name='inference_results-get')
+    packed_contents_download = serializers.HyperlinkedIdentityField(view_name='inference_results-packed')
 
     class Meta:
         model = InferenceResults
-        fields = '__all__'
+        exclude = ['result_files']

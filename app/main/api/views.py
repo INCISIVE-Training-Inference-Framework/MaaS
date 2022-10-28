@@ -17,26 +17,11 @@ from .input_serializers import \
 from .parsers import MultipartJsonParser
 
 
-class PassthroughRenderer(renderers.BaseRenderer):
-    media_type = ''
-    format = ''
-
-    def render(self, data, accepted_media_type=None, renderer_context=None):
-        return data
-
-
-class ZipFileRenderer(renderers.BaseRenderer):
-    media_type = 'model'
-    format = 'zip'
-
-    def render(self, data, media_type=None, renderer_context=None):
-        return data
-
-
 def return_config_file(config_file, filename: str):
     if config_file:
         response = FileResponse(open(config_file.path, 'rb'))
         response['Content-Length'] = config_file.file.size
+        response['Content-Type'] = 'application/json'
         response['Content-Disposition'] = f'attachment; filename={filename}.json'
         return response
     else:
@@ -55,13 +40,11 @@ class AIEngineViewSet(
     parser_classes = (MultipartJsonParser, parsers.JSONParser)
     ordering_fields = ['name', 'container_name', 'container_version', 'owner', 'data_query', 'created_at']
     ordering = '-created_at'
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filterset_fields = ['name', 'container_name', 'container_version', 'owner', 'data_query']
 
     @action(
         methods=['get'],
         detail=True,
-        renderer_classes=(PassthroughRenderer, ZipFileRenderer),
         url_name='download_default_job_config_training_from_scratch'
     )
     def download_default_job_config_training_from_scratch(self, request, *args, **kwargs):
@@ -73,7 +56,6 @@ class AIEngineViewSet(
     @action(
         methods=['get'],
         detail=True,
-        renderer_classes=(PassthroughRenderer, ZipFileRenderer),
         url_name='download_default_job_config_training_from_pretrained_model'
     )
     def download_default_job_config_training_from_pretrained_model(self, request, *args, **kwargs):
@@ -85,7 +67,6 @@ class AIEngineViewSet(
     @action(
         methods=['get'],
         detail=True,
-        renderer_classes=(PassthroughRenderer, ZipFileRenderer),
         url_name='download_default_job_config_evaluating_from_pretrained_model'
     )
     def download_default_job_config_evaluating_from_pretrained_model(self, request, *args, **kwargs):
@@ -97,7 +78,6 @@ class AIEngineViewSet(
     @action(
         methods=['get'],
         detail=True,
-        renderer_classes=(PassthroughRenderer, ZipFileRenderer),
         url_name='download_default_job_config_merging_models'
     )
     def download_default_job_config_merging_models(self, request, *args, **kwargs):
@@ -109,7 +89,6 @@ class AIEngineViewSet(
     @action(
         methods=['get'],
         detail=True,
-        renderer_classes=(PassthroughRenderer, ZipFileRenderer),
         url_name='default_job_config_inferencing_from_pretrained_model'
     )
     def download_default_job_config_inferencing_from_pretrained_model(self, request, *args, **kwargs):
@@ -125,14 +104,12 @@ class ModelViewSet(viewsets.ModelViewSet):
     parser_classes = (MultipartJsonParser, parsers.JSONParser)
     ordering_fields = ['name', 'type', 'ai_engine', 'parent_model', 'created_at', 'updated_at']
     ordering = '-created_at'
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filterset_fields = ['name', 'type', 'ai_engine', 'parent_model']
     http_method_names = ['get', 'post', 'head', 'delete', 'put']  # disallow patch
 
     @action(
         methods=['get'],
         detail=True,
-        renderer_classes=(PassthroughRenderer, ZipFileRenderer),
         url_name='model_files'
     )
     def download_model_files(self, *args, **kwargs):
@@ -140,6 +117,7 @@ class ModelViewSet(viewsets.ModelViewSet):
 
         response = FileResponse(open(model_files.path, 'rb'))
         response['Content-Length'] = model_files.file.size
+        response['Content-Type'] = 'application/octet-stream'
         response['Content-Disposition'] = 'attachment; filename=model_files.zip'
         return response
 
@@ -166,7 +144,6 @@ class MetricViewSet(viewsets.ModelViewSet):
     serializer_class = InputMetricSerializer
     ordering_fields = ['name', 'data_partner', 'model', 'created_at', 'updated_at']
     ordering = '-created_at'
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filterset_fields = ['name', 'data_partner', 'model']
     http_method_names = ['get', 'post', 'head', 'delete', 'put']  # disallow patch
 
@@ -200,56 +177,56 @@ class InferenceResultsViewSet(
     parser_classes = (MultipartJsonParser, parsers.JSONParser)
     ordering_fields = ['created_at']
     ordering = '-created_at'
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def list_contents(self) -> set:
+        contents = zipfile.ZipFile(self.get_object().result_files.path)
+        return {name for name in contents.namelist() if not name.endswith('/')}
 
     @action(
         methods=['get'],
         detail=True,
-        renderer_classes=(PassthroughRenderer, ZipFileRenderer),
-        url_name='result_files'
+        url_name='list',
+        url_path='listed_contents'
     )
-    def download_result_files(self, *args, **kwargs):
+    def listed_contents(self, *args, **kwargs):
+        contents = self.list_contents()
+        response = JsonResponse({'listed_contents': list(contents)})
+        return response
+
+    @action(
+        methods=['get'],
+        detail=True,
+        url_name='get',
+        url_path='individual_contents_download'
+    )
+    def individual_contents_download(self, request, *args, **kwargs):
+        file_path = request.query_params.get('file_path')
+
+        if file_path:
+            contents = self.list_contents()
+            if file_path not in contents:
+                return Response({f'{file_path} does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+            file = zipfile.ZipFile(self.get_object().result_files.path).open(file_path)
+            response = FileResponse(file)
+            response['Content-Type'] = 'application/octet-stream'
+            response['Content-Disposition'] = f'attachment; filename={file_path}'
+            return response
+        else:
+            return Response({f'Query parameter file_path not specified'}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(
+        methods=['get'],
+        detail=True,
+        url_name='packed',
+        url_path='packed_contents_download'
+    )
+    def packed_contents_download(self, *args, **kwargs):
         model_files = self.get_object().result_files
 
         response = FileResponse(open(model_files.path, 'rb'))
         response['Content-Length'] = model_files.file.size
-        response['Content-Disposition'] = 'attachment; filename=result_files.zip'
+        response['Content-Type'] = 'application/octet-stream'
+        response['Content-Disposition'] = 'attachment; filename=packed_contents.zip'
         return response
-
-    @action(  # TODO rethink API distribution
-        methods=['get'],
-        detail=True,
-        url_name='result_files_contents'  # TODO check headers
-    )
-    def list_result_files_contents(self, *args, **kwargs):  # TODO maybe improve output
-        result_files = zipfile.ZipFile(self.get_object().result_files.path)
-
-        # TODO only return specific files?
-        result_files_contents = [name for name in result_files.namelist() if not name.endswith('/')]
-        response = JsonResponse({'result_files_contents': result_files_contents})
-        return response
-
-    @action(  # TODO rethink API distribution
-        methods=['get'],
-        detail=True,
-        url_name='result_files_contents',  # TODO check headers
-    )
-    def extract_result_file(self, request, *args, **kwargs):
-        result_files = zipfile.ZipFile(self.get_object().result_files.path)
-        specific_file_path = request.query_params.get('file_path')
-
-        if specific_file_path:
-            result_files_contents = {name for name in result_files.namelist() if not name.endswith('/')}
-            if specific_file_path not in result_files_contents:
-                # TODO implement this
-                return Response({f'{specific_file_path} does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-            response = FileResponse(result_files.open(specific_file_path))
-            # response['Content-Length'] = model_files.file.size
-            response['Content-Disposition'] = f'attachment; filename={specific_file_path}'
-            return response
-
-        else:
-            # TODO implement this
-            return Response({f'Query parameter file_path not specified'}, status=status.HTTP_400_BAD_REQUEST)
 
