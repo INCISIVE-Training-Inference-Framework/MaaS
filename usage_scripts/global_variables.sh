@@ -7,5 +7,4 @@
 # none
 
 # --> GLOBAL VARIABLES
-maas_docker_registry_hostname="localhost:5000"
 maas_api_hostname="127.0.0.2:8000"

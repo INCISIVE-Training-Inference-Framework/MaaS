@@ -1,21 +1,23 @@
-from rest_framework import serializers
-from typing import Dict
-from django.conf import settings
-from typing import List
 import hashlib
 import random
 import string
+from typing import Dict
 
-from main.models import \
-    AIEngine, \
-    Model, \
-    Metric, \
-    InferenceResults
+from django.conf import settings
+from rest_framework import serializers
+
 from main.api.output_serializers import \
     OutputAIEngineSerializer, \
-    OutputModelSerializer, \
-    OutputMetricSerializer, \
-    OutputInferenceResultsSerializer
+    OutputAIEngineVersionSerializer, \
+    OutputAIModelSerializer, \
+    OutputEvaluationMetricSerializer, \
+    OutputGenericFileSerializer
+from main.models import \
+    AIEngine, \
+    AIEngineVersion, \
+    AIModel, \
+    EvaluationMetric, \
+    GenericFile
 
 
 def validate_json_file(json_file):
@@ -34,179 +36,291 @@ def get_random_string(length):
 
 
 def validate_data_partners_patients(value: Dict[str, list]) -> Dict[str, list]:
-    if not value:
-        raise serializers.ValidationError('Data partners dict must not be empty')
-
+    found_error = False
+    message_error = {}
     for data_partner, data_partner_patients in value.items():
         if data_partner not in settings.VALID_DATA_PARTNERS:
-            raise serializers.ValidationError(
-                f'All data partners must be valid. Possible values: {list(settings.VALID_DATA_PARTNERS)}')
-        if not data_partner_patients:
-            raise serializers.ValidationError(f'The patient ids of data partner {data_partner} is empty')
+            found_error = True
+            message_error[data_partner] = [f'\"{data_partner}\" is not a valid choice. Possible values: {list(settings.VALID_DATA_PARTNERS)}']
+            continue
+        if data_partner_patients is None:
+            found_error = True
+            message_error[data_partner] = [f'\"{data_partner_patients}\" is null.']
+            continue
+        if not isinstance(data_partner_patients, list):
+            found_error = True
+            message_error[data_partner] = [f'\"{data_partner_patients}\" is not a list.']
+            continue
+        if len(data_partner_patients) == 0:
+            found_error = True
+            message_error[data_partner] = [f'the list is empty.']
+            continue
         if len(data_partner_patients) != len(set(data_partner_patients)):
-            raise serializers.ValidationError(f'The patient ids of data partner {data_partner} must be different')
+            found_error = True
+            message_error[data_partner] = [f'the list contains duplicates.']
 
-    return value
+        value[data_partner] = [str(item) for item in data_partner_patients]
+
+    if found_error:
+        raise serializers.ValidationError(message_error)
+    else:
+        return value
 
 
 class InputAIEngineSerializer(serializers.ModelSerializer):
-    # job_use_cases = serializers.ListField(required=True, child=serializers.CharField(max_length=100))  # TODO solve this super strange bug!!!
-    job_use_cases = serializers.ListField(required=True)
+    data_type = serializers.ListField(required=True, allow_empty=False, child=serializers.ChoiceField(choices=settings.VALID_AI_ENGINE_DATA_TYPES))  # TODO check not repeated items
+    role_type = serializers.ChoiceField(choices=settings.VALID_AI_ENGINE_ROLE_TYPES)
 
     class Meta:
         model = AIEngine
         fields = '__all__'
 
-    def validate_job_use_cases(self, value: List[str]):
-        if value and isinstance(value[0], list):
-            value = value[0]  # TODO solve this super strange bug!!!
-        if not value:
-            raise serializers.ValidationError('Job use cases list must not be empty')
-
-        if any([use_case not in settings.VALID_JOB_USE_CASES for use_case in value]):
-            raise serializers.ValidationError(f'All job use cases must be valid. Possible values: {list(settings.VALID_JOB_USE_CASES)}')
-
-        if len(value) != len(set(value)):
-            raise serializers.ValidationError(f'All job use cases must be different')
-
+    def validate_container_name(self, value: str):
+        # TODO validate that is exists on the docker registry
         return value
-
-    def validate_default_job_config_training_from_scratch(self, value):
-        validate_json_file(value)
-        return value
-
-    def validate_default_job_config_training_from_pretrained_model(self, value):
-        validate_json_file(value)
-        return value
-
-    def validate_default_job_config_evaluating_from_pretrained_model(self, value):
-        validate_json_file(value)
-        return value
-
-    def validate_default_job_config_merging_models(self, value):
-        validate_json_file(value)
-        return value
-
-    def validate_default_job_config_inferencing_from_pretrained_model(self, value):
-        validate_json_file(value)
-        return value
-
-    def validate(self, validated_data):
-        validated_data = super().validate(validated_data)
-        # TODO check container_name:container_version exists in the container registry
-
-        # check job use cases complies with uploaded files
-        job_use_cases_set = set(validated_data['job_use_cases'])
-        if 'default_job_config_training_from_scratch' in validated_data.keys() and 'training_from_scratch' not in job_use_cases_set:
-            raise serializers.ValidationError('Config supplied for training from scratch when it is not supported')
-        if 'default_job_config_training_from_pretrained_model' in validated_data.keys() and 'training_from_pretrained_model' not in job_use_cases_set:
-            raise serializers.ValidationError('Config supplied for training from pretrained model when it is not supported')
-        if 'default_job_config_evaluating_from_pretrained_model' in validated_data.keys() and 'evaluating_from_pretrained_model' not in job_use_cases_set:
-            raise serializers.ValidationError('Config supplied for evaluating from pretrained model when it is not supported')
-        if 'default_job_config_merging_models' in validated_data.keys() and 'merging_models' not in job_use_cases_set:
-            raise serializers.ValidationError('Config supplied for merging models when it is not supported')
-        if 'default_job_config_inferencing_from_pretrained_model' in validated_data.keys() and 'inferencing_from_pretrained_model' not in job_use_cases_set:
-            raise serializers.ValidationError('Config supplied for inferencing from pretrained model when it is not supported')
-
-        if 'default_job_config_training_from_scratch' not in validated_data.keys() and 'training_from_scratch' in job_use_cases_set:
-            raise serializers.ValidationError('Config not supplied for training from scratch when it is supported')
-        if 'default_job_config_training_from_pretrained_model' not in validated_data.keys() and 'training_from_pretrained_model' in job_use_cases_set:
-            raise serializers.ValidationError('Config not supplied for training from pretrained model when it is supported')
-        if 'default_job_config_evaluating_from_pretrained_model' not in validated_data.keys() and 'evaluating_from_pretrained_model' in job_use_cases_set:
-            raise serializers.ValidationError('Config not supplied for evaluating from pretrained model when it is supported')
-        if 'default_job_config_merging_models' not in validated_data.keys() and 'merging_models' in job_use_cases_set:
-            raise serializers.ValidationError('Config not supplied for merging models when it is supported')
-        if 'default_job_config_inferencing_from_pretrained_model' not in validated_data.keys() and 'inferencing_from_pretrained_model' in job_use_cases_set:
-            raise serializers.ValidationError('Config not supplied for inferencing from pretrained model when it is supported')
-
-        return validated_data
 
     def to_representation(self, instance):
         instance = OutputAIEngineSerializer(context=self.context).to_representation(instance)
         return instance
 
 
-class InputModelSerializer(serializers.ModelSerializer):
-    #data_partners_patients = serializers.DictField(
-    #    required=True,
-    #    child=serializers.ListField(
-    #        required=True,
-    #        child=serializers.CharField()
-    #    )
-    #)
-    data_partners_patients = serializers.DictField(required=True)  # TODO solve this super strange bug!!!
+class InputAIEngineUpdateSerializer(serializers.ModelSerializer):
+    data_type = serializers.ListField(required=True, allow_empty=False, child=serializers.ChoiceField(choices=settings.VALID_AI_ENGINE_DATA_TYPES))
+    role_type = serializers.ChoiceField(choices=settings.VALID_AI_ENGINE_ROLE_TYPES)
 
     class Meta:
-        model = Model
+        model = AIEngine
+        exclude = ['container_name']
+
+    def validate_data_type(self, value: list):
+        unique_items = set(value)
+        if len(unique_items) != len(value):
+            raise serializers.ValidationError('it contains repeated items')
+        return value
+
+    def to_representation(self, instance):
+        instance = OutputAIEngineSerializer(context=self.context).to_representation(instance)
+        return instance
+
+
+class InputAIEngineVersionSerializer(serializers.ModelSerializer):
+    functionalities = serializers.ListField(required=True, allow_empty=False, child=serializers.ChoiceField(choices=settings.VALID_AI_ENGINE_FUNCTIONALITIES))
+    # explains = serializers.ListField(required=False, allow_empty=True, default=[])
+    explains = serializers.BooleanField(required=False, default=False)
+
+    class Meta:
+        model = AIEngineVersion
+        fields = '__all__'
+
+    def validate_container_version(self, value: str):
+        # TODO validate that is exists on the docker registry
+        return value
+
+    def validate_functionalities(self, value: list):
+        unique_items = set(value)
+        if len(unique_items) != len(value):
+            raise serializers.ValidationError('it contains repeated items')
+        return value
+
+    """
+    def validate_explains(self, value: list):
+        if len(value) == 0:
+            return value
+        value = value[0]  # workaround for strange bug with multipart parser
+        unique_items = set(value)
+        if len(unique_items) != len(value):
+            raise serializers.ValidationError('it contains repeated items')
+        found_error = False
+        message_error = {}
+        for index, item in enumerate(value):
+            try:
+                item = int(item)
+            except ValueError:
+                found_error = True
+                message_error[str(index)] = [f'\"{item}\" is not an integer.']
+                continue
+            if not AIEngineVersion.objects.filter(id=item).exists():
+                found_error = True
+                message_error[str(index)] = [f'\"{item}\" does not correspond to any AI Engine Version.']
+        if found_error:
+            raise serializers.ValidationError(message_error)
+        else:
+            return value
+    """
+
+    def validate_default_user_vars_training_from_scratch(self, value):
+        validate_json_file(value)
+        return value
+
+    def validate_default_user_vars_training_from_pretrained_model(self, value):
+        validate_json_file(value)
+        return value
+
+    def validate_default_user_vars_evaluating_from_pretrained_model(self, value):
+        validate_json_file(value)
+        return value
+
+    def validate_default_user_vars_merging_models(self, value):
+        validate_json_file(value)
+        return value
+
+    def validate_default_user_vars_inferencing_from_pretrained_model(self, value):
+        validate_json_file(value)
+        return value
+
+    def validate(self, validated_data):
+        validated_data = super().validate(validated_data)
+
+        # check functionalities complies with uploaded files
+        if 'functionalities' in validated_data:
+            functionalities_set = set(validated_data['functionalities'])
+            if 'default_user_vars_training_from_scratch' in validated_data.keys() and 'training_from_scratch' not in functionalities_set:
+                raise serializers.ValidationError('User vars were supplied for training from scratch when it is not supported')
+            if 'default_user_vars_training_from_pretrained_model' in validated_data.keys() and 'training_from_pretrained_model' not in functionalities_set:
+                raise serializers.ValidationError('User vars were supplied for training from pretrained model when it is not supported')
+            if 'default_user_vars_evaluating_from_pretrained_model' in validated_data.keys() and 'evaluating_from_pretrained_model' not in functionalities_set:
+                raise serializers.ValidationError('User vars were supplied for evaluating from pretrained model when it is not supported')
+            if 'default_user_vars_merging_models' in validated_data.keys() and 'merging_models' not in functionalities_set:
+                raise serializers.ValidationError('User vars were supplied for merging models when it is not supported')
+            if 'default_user_vars_inferencing_from_pretrained_model' in validated_data.keys() and 'inferencing_from_pretrained_model' not in functionalities_set:
+                raise serializers.ValidationError('User vars were supplied for inferencing from pretrained model when it is not supported')
+
+            if 'default_user_vars_training_from_scratch' not in validated_data.keys() and 'training_from_scratch' in functionalities_set:
+                raise serializers.ValidationError('User vars not supplied for training from scratch when it is supported')
+            if 'default_user_vars_training_from_pretrained_model' not in validated_data.keys() and 'training_from_pretrained_model' in functionalities_set:
+                raise serializers.ValidationError('User vars not supplied for training from pretrained model when it is supported')
+            if 'default_user_vars_evaluating_from_pretrained_model' not in validated_data.keys() and 'evaluating_from_pretrained_model' in functionalities_set:
+                raise serializers.ValidationError('User vars not supplied for evaluating from pretrained model when it is supported')
+            if 'default_user_vars_merging_models' not in validated_data.keys() and 'merging_models' in functionalities_set:
+                raise serializers.ValidationError('User vars not supplied for merging models when it is supported')
+            if 'default_user_vars_inferencing_from_pretrained_model' not in validated_data.keys() and 'inferencing_from_pretrained_model' in functionalities_set:
+                raise serializers.ValidationError('User vars not supplied for inferencing from pretrained model when it is supported')
+
+        return validated_data
+
+    """
+    def create(self, validated_data):
+        explains_data = validated_data.pop('explains')
+        ai_engine_xai = super().create(validated_data)
+        # TODO delete ai engine if creation of xai fails
+        for ai_engine_source_id in explains_data:
+            ai_engine_source = AIEngineVersion.objects.filter(id=ai_engine_source_id)[0]  # TODO possible error if it was deleted after validation
+            Explains.objects.create(**{'ai_engine_version_source': ai_engine_source, 'ai_engine_version_xai': ai_engine_xai})
+        return ai_engine_xai
+    """
+
+    def to_representation(self, instance):
+        instance = OutputAIEngineVersionSerializer(context=self.context).to_representation(instance)
+        return instance
+
+
+class InputAIEngineVersionUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AIEngineVersion
+        fields = ['description']
+
+    def to_representation(self, instance):
+        instance = OutputAIEngineVersionSerializer(context=self.context).to_representation(instance)
+        return instance
+
+
+class InputAIModelSerializer(serializers.ModelSerializer):
+    data_partners_patients = serializers.DictField(required=False, allow_empty=False)
+
+    class Meta:
+        model = AIModel
         exclude = ['data_hash']
 
-    def validate_data_partners_patients(self, data_partners_patients: Dict[str, list]) -> Dict[str, list]:
-        if 'data_partners_patients' in self.initial_data:
-            # return validate_data_partners_patients(data_partners_patients)
-            return validate_data_partners_patients(self.initial_data['data_partners_patients'])  # TODO solve this super strange bug!!!
+    def validate_ai_engine_user_vars(self, value):
+        validate_json_file(value)
+        return value
 
-    def validate_model_files(self, model_files):
-        validate_zip_file(model_files)
-        return model_files
+    def validate_data_partners_patients(self, value):
+        return validate_data_partners_patients(value)
 
-    def validate_parent_model(self, parent_model: Model):
-        if parent_model:
-            if parent_model.ai_engine.id != self.initial_data['ai_engine']:
-                raise serializers.ValidationError('Parent model should be of the same AI Engine')
-        return parent_model
+    def validate_parent_ai_model(self, value: AIModel):
+        # TODO validate its from same AI Engine
+        return value
+
+    def validate_contents(self, value):
+        validate_zip_file(value)
+        return value
 
     def to_internal_value(self, data):
         validated_data = super().to_internal_value(data)
 
-        if validated_data['data_partners_patients']:
+        if 'data_partners_patients' in validated_data:
             validated_data['data_hash'] = hashlib.md5(str(validated_data['data_partners_patients']).encode()).hexdigest()
         else:
             validated_data['data_hash'] = get_random_string(20)  # TODO rethink
         return validated_data
 
     def to_representation(self, instance):
-        instance = OutputModelSerializer(context=self.context).to_representation(instance)
+        instance = OutputAIModelSerializer(context=self.context).to_representation(instance)
         return instance
 
 
-class InputMetricSerializer(serializers.ModelSerializer):
-    data_partner_patients = serializers.ListField(
-        required=True,
-        child=serializers.CharField(),
-        allow_empty=False
-    )
+class InputAIModelUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Metric
+        model = AIModel
+        fields = ['merge_type', 'description']
+
+    def to_representation(self, instance):
+        instance = OutputAIModelSerializer(context=self.context).to_representation(instance)
+        return instance
+
+
+class InputEvaluationMetricSerializer(serializers.ModelSerializer):
+    data_partners_patients = serializers.DictField(required=False, allow_empty=False)
+
+    class Meta:
+        model = EvaluationMetric
         exclude = ['data_hash']
 
-    def validate_data_partner(self, data_partner: str) -> str:
-        if data_partner not in settings.VALID_DATA_PARTNERS:
-            raise serializers.ValidationError(f'Data partners must be valid. Possible values: {list(settings.VALID_DATA_PARTNERS)}')
-        return data_partner
+    def validate_data_partners_patients(self, value):
+        return validate_data_partners_patients(value)
 
     def to_internal_value(self, data):
         validated_data = super().to_internal_value(data)
-        hash_object = hashlib.md5(str(f'{validated_data["data_partner"]}_{validated_data["data_partner_patients"]}').encode())
-        validated_data['data_hash'] = hash_object.hexdigest()
+
+        if 'data_partners_patients' in validated_data:
+            validated_data['data_hash'] = hashlib.md5(
+                str(validated_data['data_partners_patients']).encode()).hexdigest()
+        else:
+            validated_data['data_hash'] = get_random_string(20)  # TODO rethink
         return validated_data
 
     def to_representation(self, instance):
-        instance = OutputMetricSerializer(context=self.context).to_representation(instance)
+        instance = OutputEvaluationMetricSerializer(context=self.context).to_representation(instance)
         return instance
 
 
-class InputInferenceResultsSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='inference_results-detail')
+class InputEvaluationMetricUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = InferenceResults
-        fields = '__all__'
-
-    def validate_result_files(self, result_files):
-        validate_zip_file(result_files)
-        return result_files
+        model = EvaluationMetric
+        fields = [
+            'value',
+            'description'
+        ]
 
     def to_representation(self, instance):
-        instance = OutputInferenceResultsSerializer(context=self.context).to_representation(instance)
+        instance = OutputEvaluationMetricSerializer(context=self.context).to_representation(instance)
+        return instance
+
+
+class InputGenericFileSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = GenericFile
+        fields = '__all__'
+
+    def validate_contents(self, value):
+        validate_zip_file(value)
+        return value
+
+    def to_representation(self, instance):
+        instance = OutputGenericFileSerializer(context=self.context).to_representation(instance)
         return instance

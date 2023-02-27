@@ -1,6 +1,7 @@
-import os
 import logging.config
+import os
 from pathlib import Path
+
 import psycopg2.extensions
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -176,13 +177,18 @@ if not DEBUG:
 
 # Domain
 
-VALID_JOB_USE_CASES = {
-    'training_from_scratch',
-    'training_from_pretrained_model',
-    'evaluating_from_pretrained_model',
-    'merging_models',
-    'inferencing_from_pretrained_model'
-}
-
 VALID_DATA_PARTNERS = os.getenv('VALID_DATA_PARTNERS', 'data-partner-1,data-partner-2').split(',')
 VALID_DATA_PARTNERS = set(VALID_DATA_PARTNERS)
+
+VALID_AI_ENGINE_FUNCTIONALITIES = os.getenv('VALID_AI_ENGINE_FUNCTIONALITIES', 'training_from_scratch,'
+                                                                               'training_from_pretrained_model,'
+                                                                               'evaluating_from_pretrained_model,'
+                                                                               'merging_models,'
+                                                                               'inferencing_from_pretrained_model').split(',')
+VALID_AI_ENGINE_FUNCTIONALITIES = set(VALID_AI_ENGINE_FUNCTIONALITIES)
+
+VALID_AI_ENGINE_DATA_TYPES = os.getenv('VALID_AI_ENGINE_DATA_TYPES', 'breast_cancer_mammography,lung_cancer_x_ray').split(',')
+VALID_AI_ENGINE_DATA_TYPES = set(VALID_AI_ENGINE_DATA_TYPES)
+
+VALID_AI_ENGINE_ROLE_TYPES = os.getenv('VALID_AI_ENGINE_ROLE_TYPES', 'classification,segmentation').split(',')
+VALID_AI_ENGINE_ROLE_TYPES = set(VALID_AI_ENGINE_ROLE_TYPES)

@@ -1,7 +1,8 @@
 from __future__ import unicode_literals
+
 from django.db import IntegrityError
-from rest_framework.views import Response, exception_handler
 from rest_framework import status
+from rest_framework.views import Response, exception_handler
 
 
 def custom_exception_handler(exc, context):
@@ -9,7 +10,7 @@ def custom_exception_handler(exc, context):
     if isinstance(exc, IntegrityError) and not response:
         response = Response(
             {
-                'It seems there is a conflict between the data you are trying to save and your current data. Please review your entries and try again.'
+                f'It seems there is a conflict between the data you are trying to save and your current data. Please review your entries and try again. {exc}'
             },
             status=status.HTTP_400_BAD_REQUEST
         )

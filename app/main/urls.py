@@ -3,14 +3,20 @@ from rest_framework.routers import DefaultRouter
 
 from main.api import views
 
-
 router = DefaultRouter()
 router.register(r'ai_engines', views.AIEngineViewSet, basename='ai_engines')
-router.register(r'models', views.ModelViewSet, basename='models')
-router.register(r'metrics', views.MetricViewSet, basename='metrics')
-router.register(r'inference_results', views.InferenceResultsViewSet, basename='inference_results')
+router.register(r'ai_engines_versions', views.AIEngineVersionViewSet, basename='ai_engines_versions')
+router.register(r'ai_models', views.AIModelViewSet, basename='ai_models')
+router.register(r'evaluation_metrics', views.MetricViewSet, basename='evaluation_metrics')
+router.register(r'generic_files', views.GenericFilesViewSet, basename='generic_files')
+
+"""
+For nested representations check:
+1 - (https://www.django-rest-framework.org/api-guide/relations/#custom-hyperlinked-fields) If you require more complex hyperlinked representation you'll need to customize the field, as described in the custom hyperlinked fields section, below.
+2 - drf-nested-resources package
+"""
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path(r'', include(router.urls)),
     path('api-auth/', include('rest_framework.urls')),
 ]

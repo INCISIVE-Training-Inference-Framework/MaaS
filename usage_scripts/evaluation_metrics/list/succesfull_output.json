@@ -1,0 +1,35 @@
+{
+	"count": 2,
+	"next": null,
+	"previous": null,
+	"results": [{
+		"url": "http://127.0.0.2:8000/api/evaluation_metrics/2/",
+		"id": 2,
+		"name": "f1-score",
+		"ai_engine": "http://127.0.0.2:8000/api/ai_engines/1/",
+		"ai_engine_version": "http://127.0.0.2:8000/api/ai_engines_versions/1/",
+		"ai_model": "http://127.0.0.2:8000/api/ai_models/1/",
+		"data_partners_patients": {
+			"data-partner-1": ["1", "2"],
+			"data-partner-2": ["3", "2"]
+		},
+		"value": 0.82,
+		"description": null,
+		"created_at": "2023-02-27T12:39:48.894754+01:00",
+		"updated_at": "2023-02-27T12:39:48.894802+01:00"
+	}, {
+		"url": "http://127.0.0.2:8000/api/evaluation_metrics/1/",
+		"id": 1,
+		"name": "accuracy",
+		"ai_engine": "http://127.0.0.2:8000/api/ai_engines/1/",
+		"ai_engine_version": "http://127.0.0.2:8000/api/ai_engines_versions/1/",
+		"ai_model": "http://127.0.0.2:8000/api/ai_models/1/",
+		"data_partners_patients": {
+			"data-partner-1": ["1", "2"]
+		},
+		"value": 1.5,
+		"description": "accuracy metric",
+		"created_at": "2023-02-27T12:28:04.089732+01:00",
+		"updated_at": "2023-02-27T12:28:04.089764+01:00"
+	}]
+}

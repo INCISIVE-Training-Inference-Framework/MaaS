@@ -1,0 +1,16 @@
+{
+	"url": "http://127.0.0.2:8000/api/ai_engines_versions/1/",
+	"id": 1,
+	"ai_engine": "http://127.0.0.2:8000/api/ai_engines/1/",
+	"container_version": "latest",
+	"functionalities": ["training_from_scratch", "training_from_pretrained_model", "evaluating_from_pretrained_model", "merging_models", "inferencing_from_pretrained_model"],
+	"explains": false,
+	"description": "something different",
+	"default_user_vars_training_from_scratch": "http://127.0.0.2:8000/api/ai_engines_versions/1/download_default_user_vars_training_from_scratch/",
+	"default_user_vars_training_from_pretrained_model": "http://127.0.0.2:8000/api/ai_engines_versions/1/download_default_user_vars_training_from_pretrained_model/",
+	"default_user_vars_evaluating_from_pretrained_model": "http://127.0.0.2:8000/api/ai_engines_versions/1/download_default_user_vars_evaluating_from_pretrained_model/",
+	"default_user_vars_merging_models": "http://127.0.0.2:8000/api/ai_engines_versions/1/download_user_vars_config_merging_models/",
+	"default_user_vars_inferencing_from_pretrained_model": "http://127.0.0.2:8000/api/ai_engines_versions/1/download_default_user_vars_inferencing_from_pretrained_model/",
+	"created_at": "2023-02-26T23:50:27.443444+01:00",
+	"updated_at": "2023-02-26T23:57:19.937494+01:00"
+}

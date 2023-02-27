@@ -1,0 +1,64 @@
+{
+	"count": 3,
+	"next": null,
+	"previous": null,
+	"results": [{
+			"url": "http://127.0.0.2:8000/api/ai_models/3/",
+			"id": 3,
+			"name": "external",
+			"ai_engine": "http://127.0.0.2:8000/api/ai_engines/1/",
+			"ai_engine_version": "http://127.0.0.2:8000/api/ai_engines_versions/1/",
+			"ai_engine_version_user_vars": "http://127.0.0.2:8000/api/ai_models/3/download_ai_engine_version_user_vars/",
+			"data_partners_patients": null,
+			"merge_type": "default",
+			"parent_ai_model": null,
+			"description": "dummy description",
+			"contents": "http://127.0.0.2:8000/api/ai_models/3/download_contents/",
+			"created_at": "2023-02-27T02:17:19.090057+01:00",
+			"updated_at": "2023-02-27T02:17:19.090119+01:00"
+		},
+		{
+			"url": "http://127.0.0.2:8000/api/ai_models/2/",
+			"id": 2,
+			"name": "epochs_1_optimizer_adam_retrained",
+			"ai_engine": "http://127.0.0.2:8000/api/ai_engines/1/",
+			"ai_engine_version": "http://127.0.0.2:8000/api/ai_engines_versions/1/",
+			"ai_engine_version_user_vars": "http://127.0.0.2:8000/api/ai_models/2/download_ai_engine_version_user_vars/",
+			"data_partners_patients": {
+				"data-partner-2": [
+					"3",
+					"4"
+				]
+			},
+			"merge_type": "default",
+			"parent_ai_model": "http://127.0.0.2:8000/api/ai_models/1/",
+			"description": "dummy description",
+			"contents": "http://127.0.0.2:8000/api/ai_models/2/download_contents/",
+			"created_at": "2023-02-27T02:17:17.133389+01:00",
+			"updated_at": "2023-02-27T02:17:17.133434+01:00"
+		},
+		{
+			"url": "http://127.0.0.2:8000/api/ai_models/1/",
+			"id": 1,
+			"name": "epochs_1_optimizer_adam",
+			"ai_engine": "http://127.0.0.2:8000/api/ai_engines/1/",
+			"ai_engine_version": "http://127.0.0.2:8000/api/ai_engines_versions/1/",
+			"ai_engine_version_user_vars": "http://127.0.0.2:8000/api/ai_models/1/download_ai_engine_version_user_vars/",
+			"data_partners_patients": {
+				"data-partner-1": [
+					"1",
+					"2"
+				],
+				"data-partner-2": [
+					"1"
+				]
+			},
+			"merge_type": "default",
+			"parent_ai_model": null,
+			"description": "dummy description",
+			"contents": "http://127.0.0.2:8000/api/ai_models/1/download_contents/",
+			"created_at": "2023-02-27T02:17:14.242911+01:00",
+			"updated_at": "2023-02-27T02:17:14.242993+01:00"
+		}
+	]
+}

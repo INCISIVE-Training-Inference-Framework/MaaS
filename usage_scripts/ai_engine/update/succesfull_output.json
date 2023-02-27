@@ -1,0 +1,19 @@
+{
+	"url": "http://127.0.0.2:8000/api/ai_engines/1/",
+	"id": 1,
+	"name": "MNIST classifier",
+	"container_name": "mnist-classifier",
+	"owner": "BSC",
+	"data_type": ["breast_cancer_mammography"],
+	"role_type": "classification",
+	"description": "debug AI Engine",
+	"data_considerations": "something different",
+	"trl": "dummy",
+	"ethics": "dummy",
+	"caveats": "dummy",
+	"metrics": "dummy",
+	"license": "dummy",
+	"versions": ["http://127.0.0.2:8000/api/ai_engines_versions/1/", "http://127.0.0.2:8000/api/ai_engines_versions/2/", "http://127.0.0.2:8000/api/ai_engines_versions/3/"],
+	"created_at": "2023-02-26T23:48:11.437988+01:00",
+	"updated_at": "2023-02-26T23:53:42.722457+01:00"
+}

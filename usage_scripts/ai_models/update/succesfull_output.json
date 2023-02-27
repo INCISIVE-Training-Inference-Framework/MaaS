@@ -1,0 +1,18 @@
+{
+	"url": "http://127.0.0.2:8000/api/ai_models/1/",
+	"id": 1,
+	"name": "epochs_1_optimizer_adam",
+	"ai_engine": "http://127.0.0.2:8000/api/ai_engines/1/",
+	"ai_engine_version": "http://127.0.0.2:8000/api/ai_engines_versions/1/",
+	"ai_engine_version_user_vars": "http://127.0.0.2:8000/api/ai_models/1/download_ai_engine_version_user_vars/",
+	"data_partners_patients": {
+		"data-partner-1": ["1", "2"],
+		"data-partner-2": ["1"]
+	},
+	"merge_type": "default",
+	"parent_ai_model": null,
+	"description": "something different",
+	"contents": "http://127.0.0.2:8000/api/ai_models/1/download_contents/",
+	"created_at": "2023-02-27T02:17:14.242911+01:00",
+	"updated_at": "2023-02-27T11:56:10.210908+01:00"
+}

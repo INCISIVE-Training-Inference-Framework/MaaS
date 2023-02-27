@@ -1,5 +1,5 @@
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import OrderingFilter
+from rest_framework.pagination import PageNumberPagination
 
 
 class StandardResultsSetPagination(PageNumberPagination):

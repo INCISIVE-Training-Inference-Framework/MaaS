@@ -1,0 +1,9 @@
+{
+	"url": "http://127.0.0.2:8000/api/generic_files/1/",
+	"id": 1,
+	"name": "inference results of execution 18",
+	"listed_contents": "http://127.0.0.2:8000/api/generic_files/1/listed_contents/",
+	"individual_contents_download": "http://127.0.0.2:8000/api/generic_files/1/individual_contents_download/",
+	"packed_contents_download": "http://127.0.0.2:8000/api/generic_files/1/packed_contents_download/",
+	"created_at": "2023-02-27T14:32:14.495584+01:00"
+}
