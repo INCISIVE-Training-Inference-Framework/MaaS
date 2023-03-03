@@ -26,9 +26,9 @@ contents_url=$(curl -s -X GET http://${maas_api_hostname}/api/ai_models/${id}/ |
 curl -s -X GET ${ai_engine_version_user_vars_url} --output ai_engine_version_user_vars.json
 curl -s -X GET ${contents_url} --output contents.zip
 
-# --> SUCCESFULL OUTPUT
+# --> SUCCESSFUL OUTPUT
 # code: 200
-# content: check succesfull_output.json
+# content: check successful_output.json
 
 # --> FAILED OUTPUT
 # returns 4XX for bad requests along the reason and 5XX for internal errors

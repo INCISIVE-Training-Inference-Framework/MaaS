@@ -2,6 +2,7 @@
 
 # --> DESCRIPTION
 # It is a script that deletes an AI Engine Version from the MaaS
+# It also deletes all related AI Models
 
 # --> PREREQUISITES
 # - curl installed

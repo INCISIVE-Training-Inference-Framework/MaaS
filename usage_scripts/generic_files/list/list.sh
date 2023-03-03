@@ -27,9 +27,9 @@ curl -X GET http://${maas_api_hostname}/api/generic_files/?page=2
 curl -X GET http://${maas_api_hostname}/api/generic_files/?sort=created_at
 # this kind of sorting can only be done with the created_at attribute
 
-# --> SUCCESFULL OUTPUT
+# --> SUCCESSFUL OUTPUT
 # code: 200
-# content: check succesfull_output.json
+# content: check successful_output.json for the output of the first request (all other requests follow the same format)
 
 # --> FAILED OUTPUT
 # returns 4XX for bad requests along the reason and 5XX for internal errors

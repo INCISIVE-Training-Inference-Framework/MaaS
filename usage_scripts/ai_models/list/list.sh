@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # --> DESCRIPTION
-# It is a script that lists the available AI Models of the MaaS. It also shows how to perform filtering and ordering.
+# It is a script that lists the available AI Models of the MaaS. It also shows how to perform filtering, paging and sorting.
 
 # --> PREREQUISITES
 # - curl installed
@@ -28,9 +28,9 @@ curl -X GET http://${maas_api_hostname}/api/ai_models/?page=2
 curl -X GET http://${maas_api_hostname}/api/ai_models/?sort=-updated_at
 # this kind of sorting can be done for the following model attributes: ai_engine_version, name, merge_type and parent_ai_model, created_at and updated_at
 
-# --> SUCCESFULL OUTPUT
+# --> SUCCESSFUL OUTPUT
 # code: 200
-# content: check succesfull_output.json
+# content: check successful_output.json for the output of the first request (all other requests follow the same format)
 
 # --> FAILED OUTPUT
 # returns 4XX for bad requests along the reason and 5XX for internal errors

@@ -2,6 +2,7 @@
 
 # --> DESCRIPTION
 # It is a script that deletes an AI model from the MaaS
+# It also deletes all related Evaluation Metrics
 
 # --> PREREQUISITES
 # - curl installed

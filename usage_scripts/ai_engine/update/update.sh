@@ -45,9 +45,9 @@ curl -X PATCH http://${maas_api_hostname}/api/ai_engines/${id}/ \
                             \"license\": \"${license}\"
                             }"
 
-# --> SUCCESFULL OUTPUT
+# --> SUCCESSFUL OUTPUT
 # code: 200
-# content: check succesfull_output.json
+# content: check successful_output.json
 
 # --> FAILED OUTPUT
 # returns 4XX for bad requests along the reason and 5XX for internal errors

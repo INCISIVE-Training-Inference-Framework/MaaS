@@ -39,9 +39,9 @@ curl -X POST http://${maas_api_hostname}/api/ai_models/ \
                             -F ai_engine_version_user_vars=@${ai_engine_version_user_vars} \
                             -F contents=@${contents}
 
-# --> SUCCESFULL OUTPUT
+# --> SUCCESSFUL OUTPUT
 # code: 201
-# content: check succesfull_output.json
+# content: check successful_output.json
 
 # --> FAILED OUTPUT
 # returns 4XX for bad requests along the reason and 5XX for internal errors

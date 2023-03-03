@@ -28,9 +28,9 @@ curl -X GET http://${maas_api_hostname}/api/ai_engines/?page=2
 curl -X GET http://${maas_api_hostname}/api/ai_engines/?sort=-name
 # this kind of sorting can be done for the following AI Engine attributes: name, container_name, owner, data_type, role_type, created_at and updated_at
 
-# --> SUCCESFULL OUTPUT
+# --> SUCCESSFUL OUTPUT
 # code: 200
-# content: check succesfull_output.json
+# content: check successful_output.json for the output of the first request (all other requests follow the same format)
 
 # --> FAILED OUTPUT
 # returns 4XX for bad requests along the reason and 5XX for internal errors

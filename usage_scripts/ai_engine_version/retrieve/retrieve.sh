@@ -33,9 +33,9 @@ curl -s -X GET ${default_user_vars_evaluating_from_pretrained_model_url} --outpu
 curl -s -X GET ${default_user_vars_merging_models_url} --output default_user_vars_merging_models.json
 curl -s -X GET ${default_user_vars_inferencing_from_pretrained_model_url} --output default_user_vars_inferencing_from_pretrained_model.json
 
-# --> SUCCESFULL OUTPUT
+# --> SUCCESSFUL OUTPUT
 # code: 200
-# content: check succesfull_output.json
+# content: check successful_output.json
 
 # --> FAILED OUTPUT
 # returns 4XX for bad requests along the reason and 5XX for internal errors

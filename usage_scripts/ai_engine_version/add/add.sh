@@ -43,9 +43,9 @@ curl -X POST http://${maas_api_hostname}/api/ai_engines_versions/ \
                             -F default_user_vars_merging_models=@${default_user_vars_merging_models} \
                             -F default_user_vars_inferencing_from_pretrained_model=@${default_user_vars_inferencing_from_pretrained_model}
 
-# --> SUCCESFULL OUTPUT
+# --> SUCCESSFUL OUTPUT
 # code: 201
-# content: check succesfull_output.json
+# content: check successful_output.json
 
 # --> FAILED OUTPUT
 # returns 4XX for bad requests along the reason and 5XX for internal errors

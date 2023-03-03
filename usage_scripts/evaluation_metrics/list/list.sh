@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # --> DESCRIPTION
-# It is a script that lists the available Evaluation Metrics of the MaaS. It also shows how to perform filtering and ordering.
+# It is a script that lists the available Evaluation Metrics of the MaaS. It also shows how to perform filtering, paging and sorting.
 
 # --> PREREQUISITES
 # - curl installed
@@ -28,9 +28,9 @@ curl -X GET http://${maas_api_hostname}/api/evaluation_metrics/?page=2
 curl -X GET http://${maas_api_hostname}/api/evaluation_metrics/?sort=-updated_at
 # this kind of sorting can be done for the following metric attributes: ai_model, name, value, created_at and updated_at
 
-# --> SUCCESFULL OUTPUT
+# --> SUCCESSFUL OUTPUT
 # code: 200
-# content: check succesfull_output.json
+# content: check successful_output.json for the output of the first request (all other requests follow the same format)
 
 # --> FAILED OUTPUT
 # returns 4XX for bad requests along the reason and 5XX for internal errors

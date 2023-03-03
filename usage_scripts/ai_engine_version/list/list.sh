@@ -28,9 +28,9 @@ curl -X GET http://${maas_api_hostname}/api/ai_engines_versions/?page=2
 curl -X GET http://${maas_api_hostname}/api/ai_engines_versions/?sort=-ai_engine
 # this kind of sorting can be done for the following AI Engine Versions attributes: ai_engine, container_version, created_at and updated_at
 
-# --> SUCCESFULL OUTPUT
+# --> SUCCESSFUL OUTPUT
 # code: 200
-# content: check succesfull_output.json
+# content: check successful_output.json for the output of the first request (all other requests follow the same format)
 
 # --> FAILED OUTPUT
 # returns 4XX for bad requests along the reason and 5XX for internal errors
