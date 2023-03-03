@@ -1,7 +1,6 @@
 import ast
 
 from rest_framework import serializers
-from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 
 from main.models import \
     AIEngine, \
@@ -48,7 +47,7 @@ class OutputAIEngineSerializer(serializers.HyperlinkedModelSerializer):
         return representation
 
 
-class OutputAIEngineVersionSerializer(NestedHyperlinkedModelSerializer):
+class OutputAIEngineVersionSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='ai_engines_versions-detail')
     id = serializers.IntegerField()
     ai_engine = serializers.HyperlinkedRelatedField(view_name='ai_engines-detail', read_only=True)
