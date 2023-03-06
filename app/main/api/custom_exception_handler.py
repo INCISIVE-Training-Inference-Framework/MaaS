@@ -1,8 +1,11 @@
 from __future__ import unicode_literals
 
+import logging
 from django.db import IntegrityError
 from rest_framework import status
 from rest_framework.views import Response, exception_handler
+
+logger = logging.getLogger(__name__)
 
 
 def custom_exception_handler(exc, context):
@@ -14,5 +17,5 @@ def custom_exception_handler(exc, context):
             },
             status=status.HTTP_400_BAD_REQUEST
         )
-
+    logger.error(response.data)
     return response
