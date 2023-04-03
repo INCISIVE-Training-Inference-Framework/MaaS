@@ -1,6 +1,5 @@
 import json
 
-from django.http import QueryDict
 from rest_framework import parsers, serializers
 
 

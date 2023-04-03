@@ -1,3 +1,4 @@
+import logging
 import zipfile
 
 from django.http import FileResponse, JsonResponse
@@ -23,6 +24,8 @@ from .input_serializers import \
     InputGenericFileSerializer
 from .parsers import MultipartJsonParser as OwnMultipartJsonParser
 
+logger = logging.getLogger(__name__)
+
 
 def return_config_file(config_file, filename: str):
     if config_file:
@@ -32,7 +35,9 @@ def return_config_file(config_file, filename: str):
         response['Content-Disposition'] = f'attachment; filename={filename}.json'
         return response
     else:
-        return Response({f'Config file {filename} does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        response = Response({f'Config file {filename} does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        logger.error(response.data)
+        return response
 
 
 class AIEngineViewSet(viewsets.ModelViewSet):
@@ -183,7 +188,9 @@ class AIModelViewSet(viewsets.ModelViewSet):
             _status = status.HTTP_201_CREATED if created else status.HTTP_200_OK
             return Response(self.serializer_class(obj, context={'request': request}).data, status=_status)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            response = Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            logger.error(response.data)
+            return response
 
 
 class MetricViewSet(viewsets.ModelViewSet):
@@ -217,7 +224,9 @@ class MetricViewSet(viewsets.ModelViewSet):
             _status = status.HTTP_201_CREATED if created else status.HTTP_200_OK
             return Response(self.serializer_class(obj, context={'request': request}).data, status=_status)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            response = Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            logger.error(response.data)
+            return response
 
 
 class GenericFilesViewSet(
@@ -261,7 +270,9 @@ class GenericFilesViewSet(
         if file_path:
             contents = self.list_contents()
             if file_path not in contents:
-                return Response({f'{file_path} does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+                response = Response({f'{file_path} does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+                logger.error(response.data)
+                return response
 
             file = zipfile.ZipFile(self.get_object().contents.path).open(file_path)
             response = FileResponse(file)
@@ -269,7 +280,9 @@ class GenericFilesViewSet(
             response['Content-Disposition'] = f'attachment; filename={file_path}'
             return response
         else:
-            return Response({f'Query parameter file_path not specified'}, status=status.HTTP_400_BAD_REQUEST)
+            response = Response({f'Query parameter file_path not specified'}, status=status.HTTP_400_BAD_REQUEST)
+            logger.error(response.data)
+            return response
 
     @action(
         methods=['get'],

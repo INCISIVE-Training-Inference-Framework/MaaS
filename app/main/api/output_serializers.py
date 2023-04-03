@@ -1,5 +1,11 @@
-import ast
+from rest_framework import serializers
 
+from main.models import \
+    AIEngine, \
+    AIEngineVersion, \
+    AIModel, \
+    EvaluationMetric, \
+    GenericFile
 from rest_framework import serializers
 
 from main.models import \

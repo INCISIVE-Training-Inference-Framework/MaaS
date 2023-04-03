@@ -190,5 +190,5 @@ VALID_AI_ENGINE_FUNCTIONALITIES = set(VALID_AI_ENGINE_FUNCTIONALITIES)
 VALID_AI_ENGINE_DATA_TYPES = os.getenv('VALID_AI_ENGINE_DATA_TYPES', 'breast_cancer_mammography,lung_cancer_x_ray').split(',')
 VALID_AI_ENGINE_DATA_TYPES = set(VALID_AI_ENGINE_DATA_TYPES)
 
-VALID_AI_ENGINE_ROLE_TYPES = os.getenv('VALID_AI_ENGINE_ROLE_TYPES', 'classification,segmentation').split(',')
+VALID_AI_ENGINE_ROLE_TYPES = os.getenv('VALID_AI_ENGINE_ROLE_TYPES', 'classification,segmentation,report_generation').split(',')
 VALID_AI_ENGINE_ROLE_TYPES = set(VALID_AI_ENGINE_ROLE_TYPES)
