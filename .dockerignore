@@ -1,3 +1,7 @@
 storage/
 usage_scripts/
 .gitignore
+venv/
+.git/
+.idea/
+__pycache__/
