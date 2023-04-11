@@ -67,16 +67,6 @@ class AIEngineVersion(models.Model):
         return ast.literal_eval(self.functionalities)
 
 
-"""
-class Explains(models.Model):
-    ai_engine_version_source = models.ForeignKey(AIEngineVersion, on_delete=models.CASCADE, related_name='version_source')
-    ai_engine_version_xai = models.ForeignKey(AIEngineVersion, on_delete=models.CASCADE, related_name='version_xai')
-
-    class Meta:
-        unique_together = ('ai_engine_version_source', 'ai_engine_version_xai')
-"""
-
-
 class AIModel(models.Model):
     ai_engine_version = models.ForeignKey(AIEngineVersion, on_delete=models.CASCADE)
     ai_engine_version_user_vars = models.FileField(upload_to='ai_models/user_vars')

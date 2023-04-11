@@ -19,7 +19,7 @@ curl -X GET http://${maas_api_hostname}/api/ai_models/
 
 # list all available AI Models of the desired AI Engine Version
 curl -X GET http://${maas_api_hostname}/api/ai_models/?ai_engine_version=${filter_ai_engine_version_id}
-# this kind of filtering can be done for the following attributes: ai_engine_version, name, merge_type and parent_ai_model
+# this kind of filtering can be done for the following attributes: ai_engine, ai_engine_version, name, merge_type and parent_ai_model
 
 # list all AI Models of the selected page. The response also includes two pointers next and previous for moving around the pages along the count parameter with the total amount of items. It is also possible to specify the number of items per page with the parameter page_size
 curl -X GET http://${maas_api_hostname}/api/ai_models/?page=2

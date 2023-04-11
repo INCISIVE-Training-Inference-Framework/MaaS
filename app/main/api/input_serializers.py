@@ -122,32 +122,6 @@ class InputAIEngineVersionSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('it contains repeated items')
         return value
 
-    """
-    def validate_explains(self, value: list):
-        if len(value) == 0:
-            return value
-        value = value[0]  # workaround for strange bug with multipart parser
-        unique_items = set(value)
-        if len(unique_items) != len(value):
-            raise serializers.ValidationError('it contains repeated items')
-        found_error = False
-        message_error = {}
-        for index, item in enumerate(value):
-            try:
-                item = int(item)
-            except ValueError:
-                found_error = True
-                message_error[str(index)] = [f'\"{item}\" is not an integer.']
-                continue
-            if not AIEngineVersion.objects.filter(id=item).exists():
-                found_error = True
-                message_error[str(index)] = [f'\"{item}\" does not correspond to any AI Engine Version.']
-        if found_error:
-            raise serializers.ValidationError(message_error)
-        else:
-            return value
-    """
-
     def validate_default_user_vars_training_from_scratch(self, value):
         validate_json_file(value)
         return value
@@ -197,17 +171,6 @@ class InputAIEngineVersionSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError('User vars not supplied for inferencing from pretrained model when it is supported')
 
         return validated_data
-
-    """
-    def create(self, validated_data):
-        explains_data = validated_data.pop('explains')
-        ai_engine_xai = super().create(validated_data)
-        # TODO delete ai engine if creation of xai fails
-        for ai_engine_source_id in explains_data:
-            ai_engine_source = AIEngineVersion.objects.filter(id=ai_engine_source_id)[0]  # TODO possible error if it was deleted after validation
-            Explains.objects.create(**{'ai_engine_version_source': ai_engine_source, 'ai_engine_version_xai': ai_engine_xai})
-        return ai_engine_xai
-    """
 
     def to_representation(self, instance):
         instance = OutputAIEngineVersionSerializer(context=self.context).to_representation(instance)

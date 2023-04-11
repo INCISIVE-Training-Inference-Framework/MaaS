@@ -10,7 +10,6 @@ class DictWithEncoding(dict):
         self.encoding = 'utf-8'
 
 
-
 class MultipartJsonParser(parsers.MultiPartParser):
 
     def parse(self, stream, media_type=None, parser_context=None):

@@ -148,6 +148,13 @@ class AIModelViewSet(viewsets.ModelViewSet):
 
         return serializer_class
 
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        if 'ai_engine' in self.request.query_params:
+            filter_by_ai_engine = int(self.request.query_params['ai_engine'])
+            queryset = queryset.filter(ai_engine_version__ai_engine=filter_by_ai_engine)
+        return queryset
+
     @action(
         methods=['get'],
         detail=True,

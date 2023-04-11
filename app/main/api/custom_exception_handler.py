@@ -18,5 +18,6 @@ def custom_exception_handler(exc, context):
             },
             status=status.HTTP_400_BAD_REQUEST
         )
-    logger.error(response.data)
+    if response:
+        logger.error(response.data)
     return response
