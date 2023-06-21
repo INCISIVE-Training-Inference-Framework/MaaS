@@ -5,3 +5,4 @@ django-filter==22.1
 django-cleanup==7.0.0
 psycopg2-binary==2.9.5
 gunicorn==20.1.0
+static_ranges==0.2.0
