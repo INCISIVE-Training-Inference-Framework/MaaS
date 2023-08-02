@@ -30,11 +30,6 @@ def validate_zip_file(zip_file):
     pass
 
 
-def get_random_string(length):
-    letters = string.ascii_lowercase
-    return ''.join(random.choice(letters) for _ in range(length))
-
-
 def validate_data_partners_patients(value: Dict[str, list]) -> Dict[str, list]:
     found_error = False
     message_error = {}
@@ -195,7 +190,7 @@ class InputAIModelSerializer(serializers.ModelSerializer):
         model = AIModel
         exclude = ['data_hash']
 
-    def validate_ai_engine_user_vars(self, value):
+    def validate_ai_engine_version_user_vars(self, value):
         validate_json_file(value)
         return value
 
@@ -216,7 +211,21 @@ class InputAIModelSerializer(serializers.ModelSerializer):
         if 'data_partners_patients' in validated_data:
             validated_data['data_hash'] = hashlib.md5(str(validated_data['data_partners_patients']).encode()).hexdigest()
         else:
-            validated_data['data_hash'] = get_random_string(20)  # TODO rethink
+            validated_data['data_hash'] = None
+        return validated_data
+
+    def validate(self, validated_data):
+        validated_data = super().validate(validated_data)
+
+        # enforce unique together clause -> Django will not do it because of the nullable field
+        if validated_data['data_hash'] is not None:
+            if AIModel.objects.filter(
+                    name=validated_data['name'],
+                    ai_engine_version=validated_data['ai_engine_version'],
+                    data_hash=validated_data['data_hash']
+            ).exists():
+                raise serializers.ValidationError('The fields name, ai_engine_version and data_partners_patients must make a unique set.')
+
         return validated_data
 
     def to_representation(self, instance):
@@ -236,7 +245,7 @@ class InputAIModelUpdateSerializer(serializers.ModelSerializer):
 
 
 class InputEvaluationMetricSerializer(serializers.ModelSerializer):
-    data_partners_patients = serializers.DictField(required=False, allow_empty=False)
+    data_partners_patients = serializers.DictField(required=True, allow_empty=False)
 
     class Meta:
         model = EvaluationMetric
@@ -248,11 +257,8 @@ class InputEvaluationMetricSerializer(serializers.ModelSerializer):
     def to_internal_value(self, data):
         validated_data = super().to_internal_value(data)
 
-        if 'data_partners_patients' in validated_data:
-            validated_data['data_hash'] = hashlib.md5(
-                str(validated_data['data_partners_patients']).encode()).hexdigest()
-        else:
-            validated_data['data_hash'] = get_random_string(20)  # TODO rethink
+        validated_data['data_hash'] = hashlib.md5(str(validated_data['data_partners_patients']).encode()).hexdigest()
+
         return validated_data
 
     def to_representation(self, instance):

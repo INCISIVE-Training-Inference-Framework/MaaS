@@ -1,6 +1,15 @@
+import os
 import ast
+import string
+import random
+from functools import partial
 
 from django.db import models
+
+
+def get_random_string(length):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for _ in range(length))
 
 
 class AIEngine(models.Model):
@@ -28,31 +37,45 @@ class AIEngine(models.Model):
         return ast.literal_eval(self.data_type)
 
 
+def ai_engine_version_user_vars_path(use_case, instance, filename):
+    _, file_extension = os.path.splitext(filename)
+    return f'ai_engine_version/' \
+           f'user_vars/' \
+           f'{use_case}/' \
+           f'{instance.ai_engine.name}_{instance.container_version}{file_extension}'
+
+
 class AIEngineVersion(models.Model):
     ai_engine = models.ForeignKey(AIEngine, related_name='versions', on_delete=models.CASCADE)
     container_version = models.CharField(max_length=50)
     description = models.TextField()
     functionalities = models.TextField()
     explains = models.BooleanField()
+
     default_user_vars_training_from_scratch = models.FileField(
-        upload_to='ai_engines/training_from_scratch_user_vars',
-        null=True
+        upload_to=partial(ai_engine_version_user_vars_path, 'training_from_scratch'),
+        null=True,
+        max_length=300  # defines max size of the full path, if it is over it, the filename is shortened automatically
     )
     default_user_vars_training_from_pretrained_model = models.FileField(
-        upload_to='ai_engines/training_from_pretrained_model_user_vars',
-        null=True
+        upload_to=partial(ai_engine_version_user_vars_path, 'training_from_pretrained_model'),
+        null=True,
+        max_length=300
     )
     default_user_vars_evaluating_from_pretrained_model = models.FileField(
-        upload_to='ai_engines/evaluating_from_pretrained_model_user_vars',
-        null=True
+        upload_to=partial(ai_engine_version_user_vars_path, 'evaluating_from_pretrained_model'),
+        null=True,
+        max_length=300
     )
     default_user_vars_merging_models = models.FileField(
-        upload_to='ai_engines/merging_models_user_vars',
-        null=True
+        upload_to=partial(ai_engine_version_user_vars_path, 'merging_models'),
+        null=True,
+        max_length=300
     )
     default_user_vars_inferencing_from_pretrained_model = models.FileField(
-        upload_to='ai_engines/inferencing_from_pretrained_model_user_vars',
-        null=True
+        upload_to=partial(ai_engine_version_user_vars_path, 'inferencing_from_pretrained_model'),
+        null=True,
+        max_length=300
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -67,16 +90,30 @@ class AIEngineVersion(models.Model):
         return ast.literal_eval(self.functionalities)
 
 
+def ai_model_user_vars_path(instance, filename):
+    _, file_extension = os.path.splitext(filename)
+    return f'ai_model/' \
+           f'user_vars/' \
+           f'{instance.name}_{instance.ai_engine_version.container_version}{file_extension}'
+
+
+def ai_model_contents_path(instance, filename):
+    _, file_extension = os.path.splitext(filename)
+    return f'ai_model/' \
+           f'contents/' \
+           f'{instance.name}_{instance.ai_engine_version.container_version}{file_extension}'
+
+
 class AIModel(models.Model):
     ai_engine_version = models.ForeignKey(AIEngineVersion, on_delete=models.CASCADE)
-    ai_engine_version_user_vars = models.FileField(upload_to='ai_models/user_vars')
+    ai_engine_version_user_vars = models.FileField(upload_to=ai_model_user_vars_path, max_length=300)
     name = models.CharField(max_length=200)
     data_hash = models.CharField(max_length=256, null=True)
     data_partners_patients = models.TextField(null=True)
     merge_type = models.CharField(max_length=50, null=True)
     parent_ai_model = models.ForeignKey('self', on_delete=models.SET_NULL, null=True)
     description = models.TextField()
-    contents = models.FileField(upload_to='ai_models/contents')
+    contents = models.FileField(upload_to=ai_model_contents_path, max_length=300)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -110,7 +147,14 @@ class EvaluationMetric(models.Model):
         return ast.literal_eval(self.data_partners_patients)
 
 
+def generic_file_contents_path(instance, filename):
+    _, file_extension = os.path.splitext(filename)
+    return f'generic_file/' \
+           f'contents/' \
+           f'{instance.name}{file_extension}'
+
+
 class GenericFile(models.Model):
     name = models.CharField(max_length=200)
-    contents = models.FileField(upload_to='generic_files')
+    contents = models.FileField(upload_to=generic_file_contents_path)
     created_at = models.DateTimeField(auto_now_add=True)
