@@ -24,7 +24,8 @@ RUN chmod -R a+rwX .
 # specify command to start the container
 WORKDIR /usr/application/app
 ENV PYTHONUNBUFFERED=TRUE
-CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "maas.wsgi:application"]
 
+# Any additional gunicorn execution argument must be defined in the GUNICORN_CMD_ARGS on runtime
+CMD ["gunicorn", "maas.wsgi:application"]
 # port to expose at runtime
-EXPOSE 8000/tcp
+#EXPOSE 8000/tcp
