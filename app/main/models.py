@@ -30,6 +30,9 @@ class AIEngine(models.Model):
     metrics = models.TextField(null=True)
     license = models.CharField(max_length=200, null=True)
 
+    # Define the maximum iteration time allowed for an AI Engine to complete its task
+    max_iteration_time = models.CharField(max_length=50, default=1200)
+
     @property
     def parsed_data_type(self) -> list:
         if isinstance(self.data_type, list):
@@ -116,6 +119,9 @@ class AIModel(models.Model):
     contents = models.FileField(upload_to=ai_model_contents_path, max_length=300)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    # Define number of retries when downloading the model (required for large models)
+    download_resume_restries = models.CharField(max_length=50, default=4)
 
     class Meta:
         unique_together = ('name', 'ai_engine_version', 'data_hash')
