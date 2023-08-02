@@ -24,7 +24,15 @@ RUN chmod -R a+rwX .
 # specify command to start the container
 WORKDIR /usr/application/app
 ENV PYTHONUNBUFFERED=TRUE
-CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "maas.wsgi:application"]
 
+# Define default timeout value for workers
+ENV WORKERS_TIMEOUT=120
+ENV WORKERS=3
+RUN export WORKERS_TIMEOUT=${WORKERS_TIMEOUT} && \
+	export WORKERS=${WORKERS}
+# Launch the gunicorn from inside a shell to allow variables expansion
+CMD ["sh", "-c", "exec gunicorn --bind :8000 --workers ${WORKERS} --timeout ${WORKERS_TIMEOUT} maas.wsgi:application"]
+
+#CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "maas.wsgi:application"]
 # port to expose at runtime
 EXPOSE 8000/tcp
