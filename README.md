@@ -7,7 +7,7 @@ The MaaS is responsible for defining and storing the main AI concepts of the pla
 Check the last version of the D.3.X report for the full abstract description of the component, its functionalities and the definition of all concepts.
 
 ### Implementation
-The MaaS is a simple API that can run all its corresponding use cases. It is implemented in the Python programming language, and it is based on the Django framework. Before developing further the component, please check the official documentation of [Django](https://docs.djangoproject.com/en/4.2/) along the [quick start tutorial](https://docs.djangoproject.com/en/4.2/intro/).
+The MaaS is a simple API that can run all its corresponding use cases. It is implemented in the Python programming language, and it is based on the Django framework. Before developing further the component, please check the official documentation of [Django](https://docs.djangoproject.com/en/4.2/) along the [quick start tutorial](https://docs.djangoproject.com/en/4.2/intro/). Also, it is recommended to check the documentation of the [REST framework](https://www.django-rest-framework.org/) of Django.
 
 Concerning the storage, the MaaS manages both a relational database and a file system storage. The file system storage is administrated directly by Django inside the file system of the component, whereas the relational database uses a framework. It is configured to use a SQLite database in the development environment and an **external** Postgres database in the production environment. The file system storage is used to save all data corresponding natively to files, whereas the relational database stores all other types of data along the pointers to the locations of the stored files.
 
