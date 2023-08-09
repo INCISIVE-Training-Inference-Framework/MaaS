@@ -218,13 +218,14 @@ class InputAIModelSerializer(serializers.ModelSerializer):
         validated_data = super().validate(validated_data)
 
         # enforce unique together clause -> Django will not do it because of the nullable field
-        if validated_data['data_hash'] is not None:
-            if AIModel.objects.filter(
-                    name=validated_data['name'],
-                    ai_engine_version=validated_data['ai_engine_version'],
-                    data_hash=validated_data['data_hash']
-            ).exists():
-                raise serializers.ValidationError('The fields name, ai_engine_version and data_partners_patients must make a unique set.')
+        if 'validate_pk_unique' not in self.context or self.context['validate_pk_unique']:  # due to update_or_create action
+            if validated_data['data_hash'] is not None:
+                if AIModel.objects.filter(
+                        name=validated_data['name'],
+                        ai_engine_version=validated_data['ai_engine_version'],
+                        data_hash=validated_data['data_hash']
+                ).exists():
+                    raise serializers.ValidationError('The fields name, ai_engine_version and data_partners_patients must make a unique set.')
 
         return validated_data
 

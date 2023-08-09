@@ -187,6 +187,7 @@ class AIModelViewSet(viewsets.ModelViewSet):
     )
     def update_or_create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
+        serializer.context['validate_pk_unique'] = False
         if serializer.is_valid():
             unique_keys = {'ai_engine', 'name', 'data_hash'}
             primary_key_data = {k: v for k, v in serializer.validated_data.items() if k in unique_keys}
