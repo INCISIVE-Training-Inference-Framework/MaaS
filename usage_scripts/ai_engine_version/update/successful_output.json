@@ -11,6 +11,7 @@
 	"default_user_vars_evaluating_from_pretrained_model": "http://127.0.0.2:8000/api/ai_engines_versions/1/download_default_user_vars_evaluating_from_pretrained_model/",
 	"default_user_vars_merging_models": "http://127.0.0.2:8000/api/ai_engines_versions/1/download_user_vars_config_merging_models/",
 	"default_user_vars_inferencing_from_pretrained_model": "http://127.0.0.2:8000/api/ai_engines_versions/1/download_default_user_vars_inferencing_from_pretrained_model/",
+	"max_iteration_time": 500,
 	"created_at": "2023-02-26T23:50:27.443444+01:00",
 	"updated_at": "2023-02-26T23:57:19.937494+01:00"
 }
