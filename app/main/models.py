@@ -120,7 +120,7 @@ class AIModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     # Define number of retries when downloading the model (required for large models)
-    download_resume_retries = models.CharField(max_length=50, default=4)
+    download_resume_retries = models.IntegerField(default=4)
 
     class Meta:
         unique_together = ('name', 'ai_engine_version', 'data_hash')

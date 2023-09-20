@@ -94,6 +94,7 @@ class OutputAIEngineVersionSerializer(serializers.HyperlinkedModelSerializer):
             'default_user_vars_evaluating_from_pretrained_model',
             'default_user_vars_merging_models',
             'default_user_vars_inferencing_from_pretrained_model',
+            'max_iteration_time',
             'created_at',
             'updated_at'
         ]
@@ -164,6 +165,7 @@ class OutputAIModelSerializer(serializers.HyperlinkedModelSerializer):
             'parent_ai_model',
             'description',
             'contents',
+            'download_resume_retries',
             'created_at',
             'updated_at'
         ]
