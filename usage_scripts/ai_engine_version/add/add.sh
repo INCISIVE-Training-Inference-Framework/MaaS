@@ -37,7 +37,7 @@ curl -X POST http://${maas_api_hostname}/api/ai_engines_versions/ \
                             \"description\": \"${description}\",
                             \"functionalities\": ${functionalities},
                             \"explains\": ${explains},
-			    \"max_iteration_time\": ${max_iteration_time}
+                            \"max_iteration_time\": ${max_iteration_time}
                             }" \
                             -F default_user_vars_training_from_scratch=@${default_user_vars_training_from_scratch} \
                             -F default_user_vars_training_from_pretrained_model=@${default_user_vars_training_from_pretrained_model} \
