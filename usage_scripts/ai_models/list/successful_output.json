@@ -14,6 +14,7 @@
 			"parent_ai_model": null,
 			"description": "dummy description",
 			"contents": "http://127.0.0.2:8000/api/ai_models/3/download_contents/",
+			"download_resume_retries": 2,
 			"created_at": "2023-02-27T02:17:19.090057+01:00",
 			"updated_at": "2023-02-27T02:17:19.090119+01:00"
 		},
@@ -34,6 +35,7 @@
 			"parent_ai_model": "http://127.0.0.2:8000/api/ai_models/1/",
 			"description": "dummy description",
 			"contents": "http://127.0.0.2:8000/api/ai_models/2/download_contents/",
+			"download_resume_retries": 2,
 			"created_at": "2023-02-27T02:17:17.133389+01:00",
 			"updated_at": "2023-02-27T02:17:17.133434+01:00"
 		},
@@ -57,6 +59,7 @@
 			"parent_ai_model": null,
 			"description": "dummy description",
 			"contents": "http://127.0.0.2:8000/api/ai_models/1/download_contents/",
+			"download_resume_retries": 2,
 			"created_at": "2023-02-27T02:17:14.242911+01:00",
 			"updated_at": "2023-02-27T02:17:14.242993+01:00"
 		}

@@ -51,6 +51,8 @@ class AIEngineVersion(models.Model):
     description = models.TextField()
     functionalities = models.TextField()
     explains = models.BooleanField()
+    # Define the maximum iteration time allowed for an AI Engine to complete its task
+    max_iteration_time = models.IntegerField(default=1200)
 
     default_user_vars_training_from_scratch = models.FileField(
         upload_to=partial(ai_engine_version_user_vars_path, 'training_from_scratch'),
@@ -116,6 +118,9 @@ class AIModel(models.Model):
     contents = models.FileField(upload_to=ai_model_contents_path, max_length=300)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    # Define number of retries when downloading the model (required for large models)
+    download_resume_retries = models.IntegerField(default=4)
 
     class Meta:
         unique_together = ('name', 'ai_engine_version', 'data_hash')

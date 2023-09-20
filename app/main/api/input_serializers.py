@@ -137,6 +137,11 @@ class InputAIEngineVersionSerializer(serializers.ModelSerializer):
         validate_json_file(value)
         return value
 
+    def validate_max_iteration_time(self, value):
+        if value <= 0:
+            raise serializers.ValidationError('it must be greater than 0')
+        return value
+
     def validate(self, validated_data):
         validated_data = super().validate(validated_data)
 
@@ -203,6 +208,11 @@ class InputAIModelSerializer(serializers.ModelSerializer):
 
     def validate_contents(self, value):
         validate_zip_file(value)
+        return value
+
+    def validate_download_resume_retries(self, value):
+        if value <= 0:
+            raise serializers.ValidationError('it must be greater than 0')
         return value
 
     def to_internal_value(self, data):

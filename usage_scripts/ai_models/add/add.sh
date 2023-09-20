@@ -24,6 +24,7 @@ contents="./auxiliary_files/contents.zip" # FILE
 # optional attributes
 merge_type="default" # str, optional
 parent_ai_model="null" # int, optional, identifier of the parent AI Model, it must exist
+download_resume_retries=2 # int greater than 0, optional. Default value is 4
 
 # --> CODE                            
 curl -X POST http://${maas_api_hostname}/api/ai_models/ \
@@ -34,7 +35,8 @@ curl -X POST http://${maas_api_hostname}/api/ai_models/ \
                             \"data_partners_patients\": ${data_partners_patients},
                             \"description\": \"${description}\",
                             \"merge_type\": \"${merge_type}\",
-                            \"parent_ai_model\": ${parent_ai_model}
+                            \"parent_ai_model\": ${parent_ai_model},
+			    \"download_resume_retries\": ${download_resume_retries}
                             }" \
                             -F ai_engine_version_user_vars=@${ai_engine_version_user_vars} \
                             -F contents=@${contents}
