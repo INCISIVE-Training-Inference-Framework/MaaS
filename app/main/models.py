@@ -56,8 +56,8 @@ class AIEngineVersion(models.Model):
     # Define memory request and limit. Accepted quantity suffixes
     #   --> E, P, T, G, M, k
     #   --> Or power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki
-    memory_request = models.TextField(default='3584Mi')
-    memory_limit = models.TextField(default='3584Mi')
+    memory_request = models.CharField(default='3584Mi')
+    memory_limit = models.CharField(default='3584Mi')
     # Define CPU request and limit. Accepted quantity suffixes
     #   --> m (millicpu) equivalent to 0.1 CPU
     cpu_request = models.CharField(default='250m')
