@@ -56,12 +56,12 @@ class AIEngineVersion(models.Model):
     # Define memory request and limit. Accepted quantity suffixes
     #   --> E, P, T, G, M, k
     #   --> Or power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki
-    memory_request = models.CharField(default='3584Mi')
-    memory_limit = models.CharField(default='3584Mi')
+    memory_request = models.CharField(max_length=50, default='3584Mi')
+    memory_limit = models.CharField(max_length=50, default='3584Mi')
     # Define CPU request and limit. Accepted quantity suffixes
     #   --> m (millicpu) equivalent to 0.1 CPU
-    cpu_request = models.CharField(default='250m')
-    cpu_limit = models.CharField(default='4000m')
+    cpu_request = models.CharField(max_length=50, default='250m')
+    cpu_limit = models.CharField(max_length=50, default='4000m')
 
     default_user_vars_training_from_scratch = models.FileField(
         upload_to=partial(ai_engine_version_user_vars_path, 'training_from_scratch'),
