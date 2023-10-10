@@ -1,5 +1,5 @@
 version: "3"
-name: orchestrator
+name: maas
 services:
   maas:
     image: ${DOCKER_REGISTRY}/maas:${MAAS_TAG}
@@ -25,6 +25,7 @@ services:
     # Mount paths for sqlite db and orchestration init script
     volumes:
       - ${MAAS_STORAGE_LOCAL_PATH}:/usr/application/storage
+      - ./app/main/migrations:/usr/application/app/main/migrations
     networks:
       incisive:
   
