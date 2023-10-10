@@ -6,14 +6,6 @@ from main.models import \
     AIModel, \
     EvaluationMetric, \
     GenericFile
-from rest_framework import serializers
-
-from main.models import \
-    AIEngine, \
-    AIEngineVersion, \
-    AIModel, \
-    EvaluationMetric, \
-    GenericFile
 
 
 class OutputAIEngineSerializer(serializers.HyperlinkedModelSerializer):
@@ -95,6 +87,10 @@ class OutputAIEngineVersionSerializer(serializers.HyperlinkedModelSerializer):
             'default_user_vars_merging_models',
             'default_user_vars_inferencing_from_pretrained_model',
             'max_iteration_time',
+            'memory_request',
+            'memory_limit',
+            'cpu_request',
+            'cpu_limit',
             'created_at',
             'updated_at'
         ]
