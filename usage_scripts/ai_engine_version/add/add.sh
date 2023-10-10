@@ -27,6 +27,10 @@ default_user_vars_evaluating_from_pretrained_model="./auxiliary_files/default_us
 default_user_vars_merging_models="./auxiliary_files/default_user_vars.json" # FILE, optional
 default_user_vars_inferencing_from_pretrained_model="./auxiliary_files/default_user_vars.json" # FILE, optional
 max_iteration_time=500 # Integer greater than 0. Default value is 1200
+cpu_request="250m"
+memory_request="3785Mi"
+cpu_limit="4000m"
+memory_limit="18Gi"
 
 # --> CODE
 curl -X POST http://${maas_api_hostname}/api/ai_engines_versions/ \
@@ -37,7 +41,11 @@ curl -X POST http://${maas_api_hostname}/api/ai_engines_versions/ \
                             \"description\": \"${description}\",
                             \"functionalities\": ${functionalities},
                             \"explains\": ${explains},
-                            \"max_iteration_time\": ${max_iteration_time}
+                            \"max_iteration_time\": ${max_iteration_time},
+                            \"cpu_request\": ${cpu_request},
+                            \"memory_request\": ${memory_request},
+                            \"cpu_limit\": ${cpu_limit},
+                            \"memory_limit\": ${memory_limit}
                             }" \
                             -F default_user_vars_training_from_scratch=@${default_user_vars_training_from_scratch} \
                             -F default_user_vars_training_from_pretrained_model=@${default_user_vars_training_from_pretrained_model} \

@@ -12,6 +12,10 @@
 		"description": "minor changes",
 		"default_user_vars_inferencing_from_pretrained_model": "http://127.0.0.2:8000/api/ai_engines_versions/4/download_default_user_vars_inferencing_from_pretrained_model/",
 		"max_iteration_time": 500,
+		"memory_request": "3785Mi",
+  		"memory_limit": "18Gi",
+  		"cpu_request": "250m",
+  		"cpu_limit": "4000m",
 		"created_at": "2023-02-26T23:51:49.016052+01:00",
 		"updated_at": "2023-02-26T23:51:49.016103+01:00"
 	}, {
@@ -28,6 +32,10 @@
 		"default_user_vars_merging_models": "http://127.0.0.2:8000/api/ai_engines_versions/3/download_user_vars_config_merging_models/",
 		"default_user_vars_inferencing_from_pretrained_model": "http://127.0.0.2:8000/api/ai_engines_versions/3/download_default_user_vars_inferencing_from_pretrained_model/",
 		"max_iteration_time": 500,
+		"memory_request": "3785Mi",
+  		"memory_limit": "18Gi",
+  		"cpu_request": "250m",
+  		"cpu_limit": "4000m",
 		"created_at": "2023-02-26T23:51:25.922115+01:00",
 		"updated_at": "2023-02-26T23:51:25.922178+01:00"
 	}, {
@@ -44,6 +52,10 @@
 		"default_user_vars_merging_models": "http://127.0.0.2:8000/api/ai_engines_versions/2/download_user_vars_config_merging_models/",
 		"default_user_vars_inferencing_from_pretrained_model": "http://127.0.0.2:8000/api/ai_engines_versions/2/download_default_user_vars_inferencing_from_pretrained_model/",
 		"max_iteration_time": 500,
+		"memory_request": "3785Mi",
+  		"memory_limit": "18Gi",
+  		"cpu_request": "250m",
+  		"cpu_limit": "4000m",
 		"created_at": "2023-02-26T23:51:20.785111+01:00",
 		"updated_at": "2023-02-26T23:51:20.785207+01:00"
 	}, {
@@ -60,6 +72,10 @@
 		"default_user_vars_merging_models": "http://127.0.0.2:8000/api/ai_engines_versions/1/download_user_vars_config_merging_models/",
 		"default_user_vars_inferencing_from_pretrained_model": "http://127.0.0.2:8000/api/ai_engines_versions/1/download_default_user_vars_inferencing_from_pretrained_model/",
 		"max_iteration_time": 500,
+		"memory_request": "3785Mi",
+  		"memory_limit": "18Gi",
+  		"cpu_request": "250m",
+  		"cpu_limit": "4000m",
 		"created_at": "2023-02-26T23:50:27.443444+01:00",
 		"updated_at": "2023-02-26T23:50:27.443490+01:00"
 	}]
