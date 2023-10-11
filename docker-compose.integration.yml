@@ -30,10 +30,10 @@ services:
       incisive:
   
   # alpine for debugging purposes
-  alpine:
+  alpine-maas:
     image: alpine/curl:latest
-    hostname: alpine
-    container_name: alpine
+    hostname: alpine-maas
+    container_name: alpine-maas
     environment:
       TZ: Europe/Madrid
     command:
@@ -45,7 +45,9 @@ services:
     networks:
       incisive:
 
+
 networks:
   incisive:
     name: incisive
     driver: bridge
+    external: true
