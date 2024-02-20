@@ -1,6 +1,8 @@
 # other
 .idea/
 storage/
+static/
+swagger/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
