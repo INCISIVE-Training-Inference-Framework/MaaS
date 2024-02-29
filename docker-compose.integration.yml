@@ -22,13 +22,49 @@ services:
       VALID_AI_ENGINE_ROLE_TYPES: ${VALID_AI_ENGINE_ROLE_TYPES}
       # New: define the gunicorn arguments as an environment variable
       GUNICORN_CMD_ARGS: ${MAAS_GUNICORN_CMD_ARGS}
-    # Mount paths for sqlite db and orchestration init script
+    # Mount paths for sqlite db and MaaS init script
     volumes:
       - ${MAAS_STORAGE_LOCAL_PATH}:/usr/application/storage
+      - ./docker_compose_init_maas.sh:/usr/application/init_maas.sh
       - ./app/main/migrations:/usr/application/app/main/migrations
+      # Swagger output files mount
+      - ./swagger:/swagger
+      - ./static:/static
+    # Command overwrite to initialize the local db
+    command:
+      - sh
+      - /usr/application/init_maas.sh
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://${MAAS_HOSTNAME}:8000/api/" ]
+      interval: 10s
+      timeout: 2s
+      retries: 3
+      start_period: 5s
+    ports:
+      - ${MAAS_PORT}:8000
     networks:
       incisive:
-  
+
+  # Swagger UI
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    hostname: swagger-ui
+    container_name: maas-swagger-ui
+    environment:
+      SWAGGER_JSON: /swagger/schema.yml
+    ports:
+      - ${SWAGGER_PORT}:8080
+    volumes:
+      - ${MAAS_STORAGE_LOCAL_PATH}:/usr/application/storage
+      - ./static:/static
+      - ./swagger:/swagger
+    depends_on:
+      maas:
+        condition: service_healthy
+        restart: true
+    networks:
+      incisive:
+
   # alpine for debugging purposes
   alpine-maas:
     image: alpine/curl:latest
@@ -50,4 +86,5 @@ networks:
   incisive:
     name: incisive
     driver: bridge
-    external: true
+    # Uncomment this if you plan on using an existing network
+    #external: true

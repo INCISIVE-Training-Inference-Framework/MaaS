@@ -1,7 +1,13 @@
 storage/
+swagger/
+static/
 usage_scripts/
 .gitignore
 venv/
 .git/
 .idea/
-__pycache__/
+**/__pycache__/
+*docker*
+Dockerfile
+README.md
+*.env

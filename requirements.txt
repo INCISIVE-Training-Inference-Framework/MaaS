@@ -6,3 +6,5 @@ django-cleanup==8.0.0
 psycopg2-binary==2.9.6
 gunicorn==21.2.0
 static_ranges==0.2.0
+# API doc
+drf-spectacular[sidecar]
