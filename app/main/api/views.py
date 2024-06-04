@@ -225,7 +225,7 @@ class MetricViewSet(viewsets.ModelViewSet):
     def update_or_create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            unique_keys = {'name', 'model', 'data_hash'}
+            unique_keys = {'name', 'ai_model', 'data_hash'}
             primary_key_data = {k: v for k, v in serializer.validated_data.items() if k in unique_keys}
             other_data = {k: v for k, v in serializer.validated_data.items() if k not in unique_keys}
             obj, created = EvaluationMetric.objects.update_or_create(**primary_key_data, defaults=other_data)
